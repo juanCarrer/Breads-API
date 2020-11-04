@@ -1,5 +1,6 @@
 const express = require('express')
 const BreadService = require('../services/breads')
+const response = require('../utils/response')
 
 function breadsApi(app) {
 	const router = express.Router()
@@ -10,20 +11,18 @@ function breadsApi(app) {
 	router.get('/', async (req, res) => {
 		try {
 			const data = await breadService.getBreads()
-			res.json(data)
+			response.success(req, res, 200, data)
 		} catch (err) {
-			console.log('[breads routes]', err.message)
-			res.status(500).json({ error: err.message })
+			response.error(req, res, err.status, err.responseMessage, err)
 		}
 	})
 
 	router.get('/:id', async (req, res) => {
 		try {
 			const bread = await breadService.getOneBread(req.params.id)
-			res.json(bread)
+			response.success(req, res, 200, bread)
 		} catch (err) {
-			console.log('[breads routes]', err.message)
-			res.status(500).json({ error: err.message })
+			response.error(req, res, err.status, err.responseMessage, err)
 		}
 	})
 
@@ -32,8 +31,7 @@ function breadsApi(app) {
 			const newBread = await breadService.includeBread(req.body)
 			res.json(newBread)
 		} catch (err) {
-			console.log('[breads routes]', err.message)
-			res.status(400).json({ error: err.message })
+			response.error(req, res, err.status, err.responseMessage, err)
 		}
 	})
 
@@ -42,8 +40,7 @@ function breadsApi(app) {
 			const updatedBread = await breadService.updateBread(req.params.id, req.body)
 			res.json(updatedBread)
 		} catch (err) {
-			console.log('[breads routes]', err.message)
-			res.status(400).json({ error: err.message })
+			response.error(req, res, err.status, err.responseMessage, err)
 		}
 	})
 
@@ -52,8 +49,7 @@ function breadsApi(app) {
 			const deletedBread = await breadService.deleteBread(req.params.id)
 			res.json(deletedBread)
 		} catch (err) {
-			console.log('[breads routes]', err.message)
-			res.status(500).json({ error: err.message })
+			response.error(req, res, err.status, err.responseMessage, err)
 		}
 	})
 }
